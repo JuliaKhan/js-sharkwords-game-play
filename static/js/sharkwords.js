@@ -50,7 +50,10 @@ const isLetterInWord = (letter) => document.querySelector(`div.${letter}`) !== n
 // Called when `letter` is in word. Update contents of divs with `letter`.
 //
 const handleCorrectGuess = (letter) => {
-  // Replace this with your code
+  const boxes = document.querySelectorAll(`.letter-box.${letter}`);
+  for (const box of boxes){
+    box.insertAdjacentHTML('afterbegin',`${letter}`); //adds letter to div
+  }
 };
 
 //
@@ -62,7 +65,16 @@ const handleCorrectGuess = (letter) => {
 
 const handleWrongGuess = () => {
   numWrong += 1;
-  // Replace this with your code
+  const image = document.querySelector('img') //if we had other images we'd need to be more specific
+  image.setAttribute('src', `static/images/guess${numWrong}.png`);
+  if (numWrong >= 5){
+    const buttons = document.querySelectorAll('button');
+    for (const button of buttons){
+      disableLetterButton(button);
+    }
+    const message = document.querySelector('#play-again');
+    message.setAttribute('style','display: block');
+  }
 };
 
 //  Reset game state. Called before restarting the game.
@@ -81,9 +93,20 @@ const resetGame = () => {
 
   for (const button of document.querySelectorAll('button')) {
     // add an event handler to handle clicking on a letter button
-    // YOUR CODE HERE
+    button.addEventListener('click', (evt) => {
+      const letter = evt.target.innerHTML;
+      console.log(letter);
+      disableLetterButton(evt.target);
+      if (isLetterInWord(letter)){
+        handleCorrectGuess(letter);
+        }
+      else {
+        handleWrongGuess();
+      }
+    })
   }
 
   // add an event handler to handle clicking on the Play Again button
-  // YOUR CODE HERE
+  const playAgain = document.querySelector('#play-again');
+  playAgain.addEventListener('click', resetGame)
 })();
